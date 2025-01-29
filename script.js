@@ -18,16 +18,11 @@ const inputElevation = document.querySelector('.form__input--elevation');
 
 navigator.geolocation.getCurrentPosition(
   function (position) {
-    alert('location spotted! charge everyone');
     const { latitude } = position.coords;
     const { longitude } = position.coords;
     console.log(`https://www.google.pt/maps/@${latitude},${longitude}`);
 
     const coords = [latitude, longitude];
-
-    // L is a global variable[which stores an object] from api we invoked with script Leaflet.js.
-    // 'map' is the id of the tag which will display the map.
-    // the arguments in setView are coords[which are latititude and longitude] and the zoom level[how much it should be]
     const map = L.map('map').setView(coords, 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -35,8 +30,29 @@ navigator.geolocation.getCurrentPosition(
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    // this is the which will mark the marker on the map.[location symbol]
-    L.marker(coords).addTo(map).bindPopup('A pretty css popup').openPopup();
+    // to add a marker on the map whenever we click on the map. we use eventlisterners which are provided by the api.
+    map.on('click', function (mapevent) {
+      console.log(mapevent);
+      // when we click on mapevent is generated
+      const { lat, lng } = mapevent.latlng; // variable separation using objects
+      console.log(lat, lng);
+      // this code will mark the map by using the latitude and longitude.
+      // all popup options are from the documentation. check if you want to see.
+      // all of those options determine the popup appear on top of location symbol. and class name is added to that as mentioned.[check it's styles in css]
+      L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(
+          L.popup({
+            maxWidth: 250,
+            minWidth: 100,
+            autoClose: false,
+            closeOnClick: false,
+            className: 'running-popup',
+          })
+        )
+        .setPopupContent('workout')
+        .openPopup();
+    });
   },
   function () {
     alert('not able to get the location');
