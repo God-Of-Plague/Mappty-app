@@ -22,6 +22,21 @@ navigator.geolocation.getCurrentPosition(
     const { latitude } = position.coords;
     const { longitude } = position.coords;
     console.log(`https://www.google.pt/maps/@${latitude},${longitude}`);
+
+    const coords = [latitude, longitude];
+
+    // L is a global variable[which stores an object] from api we invoked with script Leaflet.js.
+    // 'map' is the id of the tag which will display the map.
+    // the arguments in setView are coords[which are latititude and longitude] and the zoom level[how much it should be]
+    const map = L.map('map').setView(coords, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // this is the which will mark the marker on the map.[location symbol]
+    L.marker(coords).addTo(map).bindPopup('A pretty css popup').openPopup();
   },
   function () {
     alert('not able to get the location');
